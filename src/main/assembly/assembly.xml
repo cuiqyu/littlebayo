@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<assembly>
+    <!-- 必须写，否则打包时会有 assembly ID must be present and non-empty 错误，这个名字最终会追加到打包的名字的末尾 -->
+    <!-- 可自定义，这里指定的是项目环境 -->
+    <!-- spring-boot-assembly-local-1.0.RELEASE.tar.gz  -->
+    <id>${project.version}</id>
+
+    <!-- 打包的类型，如果有N个，将会打N个类型的包 -->
+    <formats>
+        <!--<format>tar.gz</format>-->
+        <format>zip</format>
+    </formats>
+
+    <!--
+        在最终存档中包含基本目录。例如，如果要创建一个名为“ your-app”的程序集
+        则将includeBaseDirectory设置为true将创建一个包含此基本目录的存档。
+        如果将此选项设置为false，则创建的归档文件会将其内容解压缩到当前目录。
+        默认值true
+    -->
+    <includeBaseDirectory>true</includeBaseDirectory>
+
+    <!-- 文件位置 -->
+    <fileSets>
+        <!--
+            0755->即用户具有读/写/执行权限，组用户和其它用户具有读写权限；
+            0644->即用户具有读写权限，组用户和其它用户具有只读权限；
+        -->
+        <!-- 将src/bin目录下的所有文件输出到打包后的bin目录中 -->
+        <fileSet>
+            <directory>${basedir}/src/bin</directory>
+            <outputDirectory>bin</outputDirectory>
+            <fileMode>0755</fileMode>
+            <includes>
+                <include>**.sh</include>
+                <include>**.bat</include>
+            </includes>
+        </fileSet>
+        <!-- 将src/main/resources/config下配置文件打包到config目录 -->
+        <fileSet>
+            <directory>src/main/resources/config</directory>
+            <outputDirectory>config</outputDirectory>
+            <fileMode>0644</fileMode>
+            <filtered>true</filtered><!-- 是否进行属性替换 -->
+        </fileSet>
+        <!-- 将第三方依赖打包到lib目录中 -->
+        <fileSet>
+            <directory>${basedir}/target/lib</directory>
+            <outputDirectory>lib</outputDirectory>
+            <fileMode>0755</fileMode>
+        </fileSet>
+        <!-- 将项目启动jar打包到boot目录中 -->
+        <fileSet>
+            <directory>${basedir}/target</directory>
+            <outputDirectory>boot</outputDirectory>
+            <fileMode>0755</fileMode>
+            <includes>
+                <include>${project.build.finalName}.jar</include>
+            </includes>
+        </fileSet>
+        <!-- 包含根目录下的文件 -->
+        <fileSet>
+            <directory>${basedir}</directory>
+            <includes>
+                <include>NOTICE</include>
+                <include>LICENSE</include>
+            </includes>
+        </fileSet>
+        <!-- 将项目说明文档打包到docs目录中 -->
+        <fileSet>
+            <directory>.</directory>
+            <outputDirectory>docs</outputDirectory>
+            <includes>
+                <include>*.md</include>
+            </includes>
+            <fileMode>0644</fileMode>
+        </fileSet>
+    </fileSets>
+
+</assembly>
